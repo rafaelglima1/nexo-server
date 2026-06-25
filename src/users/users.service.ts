@@ -80,4 +80,23 @@ export class UsersService {
     if (error) throw error;
     return data;
   }
+
+  async deleteAccount(userId: string) {
+    await this.supabase.client.from('user_interests').delete().eq('user_id', userId);
+    await this.supabase.client.from('community_members').delete().eq('user_id', userId);
+    await this.supabase.client.from('room_participants').delete().eq('user_id', userId);
+    await this.supabase.client.from('conversation_participants').delete().eq('user_id', userId);
+    await this.supabase.client.from('event_participants').delete().eq('user_id', userId);
+    await this.supabase.client.from('notifications').delete().eq('user_id', userId);
+    await this.supabase.client.from('reports').delete().eq('reporter_id', userId);
+    await this.supabase.client.from('blocked_users').delete().eq('user_id', userId);
+
+    const { error } = await this.supabase.client
+      .from('users')
+      .delete()
+      .eq('id', userId);
+
+    if (error) throw error;
+    return { message: 'Conta excluída com sucesso' };
+  }
 }

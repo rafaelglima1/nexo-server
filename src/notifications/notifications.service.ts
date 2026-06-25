@@ -60,4 +60,13 @@ export class NotificationsService {
 
     if (error) throw error;
   }
+
+  async registerToken(userId: string, token: string) {
+    const { error } = await this.supabase.client
+      .from('device_tokens')
+      .upsert({ user_id: userId, token, platform: 'android' }, { onConflict: 'token' });
+
+    if (error) throw error;
+    return { message: 'Token registrado' };
+  }
 }

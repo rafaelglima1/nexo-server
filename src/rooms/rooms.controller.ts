@@ -54,4 +54,12 @@ export class RoomsController {
   endRoom(@Param('id') id: string, @CurrentUser() user: { id: string }) {
     return this.roomsService.endRoom(id, user.id);
   }
+
+  @Post(':id/token')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Generate Agora token for room' })
+  generateToken(@Param('id') id: string, @CurrentUser() user: { id: string }) {
+    return this.roomsService.generateAgoraToken(id, user.id);
+  }
 }

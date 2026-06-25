@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 
 @Injectable()
 export class RoomsService {
-  constructor(private supabase: SupabaseService) {}
+  constructor(
+    private supabase: SupabaseService,
+    private config: ConfigService,
+  ) {}
 
   async findAll(liveOnly = false) {
     let query = this.supabase.client
@@ -102,5 +106,20 @@ export class RoomsService {
 
     if (error) throw error;
     return data;
+  }
+
+  async generateAgoraToken(roomId: string, userId: string) {
+    const appId = this.config.get<string>('AGORA_APP_ID');
+    const certificate = this.config.get<string>('AGORA_CERTIFICATE');
+
+    if (!appId) {
+      return { token: '', appId: '', channelName: roomId };
+    }
+
+    return {
+      token: '',
+      appId,
+      channelName: roomId,
+    };
   }
 }

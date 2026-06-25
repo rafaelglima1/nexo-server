@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Post, Param, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { NotificationsService } from './notifications.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -21,6 +21,15 @@ export class NotificationsController {
   @ApiOperation({ summary: 'Get unread notifications' })
   findUnread(@CurrentUser() user: { id: string }) {
     return this.notificationsService.findUnread(user.id);
+  }
+
+  @Post('register')
+  @ApiOperation({ summary: 'Register device token for push notifications' })
+  async registerToken(
+    @CurrentUser() user: { id: string },
+    @Body() body: { token: string },
+  ) {
+    return this.notificationsService.registerToken(user.id, body.token);
   }
 
   @Patch(':id/read')
