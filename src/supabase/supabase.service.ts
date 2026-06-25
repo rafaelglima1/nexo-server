@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import ws from 'ws';
 
 @Injectable()
 export class SupabaseService implements OnModuleInit {
@@ -16,7 +17,9 @@ export class SupabaseService implements OnModuleInit {
       throw new Error('SUPABASE_URL and SUPABASE_SERVICE_KEY must be set');
     }
 
-    this._client = createClient(url, key);
+    this._client = createClient(url, key, {
+      realtime: { transport: ws },
+    });
   }
 
   get client(): SupabaseClient {
